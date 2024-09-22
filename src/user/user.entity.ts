@@ -8,12 +8,12 @@ export class UserEntity {
 
   @Column()
   email: string;
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @BeforeInsert()
   async hashPassword() {
-    this.password = await hash(this.password, 10);
+    this.password = await hash(this.password, 12);
   }
 
   @Column()
