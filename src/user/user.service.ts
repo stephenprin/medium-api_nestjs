@@ -8,6 +8,7 @@ import { JWT_SECRET_KEY } from '@app/config/config';
 import { UserResponseInterface } from '@app/types/userResponse.interface';
 import { LoginUserDto } from '@app/dto/loginUser.dto';
 import { compare } from 'bcrypt';
+import { UpdateUserDto } from '@app/dto/updateUserDto';
 
 @Injectable()
 export class UserService {
@@ -62,6 +63,14 @@ export class UserService {
   async findUserById(id: number): Promise<UserEntity> {
     return await this.userRepository.findOne({ where: { id } });
   }
+  async updateUser(
+    userId: number,
+    updateUser: UpdateUserDto,
+  ): Promise<UserEntity> {
+    const user = await this.findUserById(userId);
+    Object.assign(user, updateUser);
+    return await this.userRepository.save(user);
+  }
 
   generateJwtToken(user: UserEntity): string {
     return sign(
@@ -74,6 +83,7 @@ export class UserService {
       { expiresIn: '1h' },
     );
   }
+
   buildUserResponse(user: UserEntity): UserResponseInterface {
     return {
       user: {
