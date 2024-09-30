@@ -1,14 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate } from 'typeorm';
+import { UserEntity } from '@app/user/user.entity';
+import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, ManyToOne } from 'typeorm';
 
 @Entity({ name: 'articles' })
-export class UserEntity {
+export class ArticleEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   slug: string;
   @Column()
-  tittle: string;
+  title: string;
   @Column({ default: '' })
   description: string;
   @Column({ default: '' })
@@ -25,4 +26,6 @@ export class UserEntity {
   updateTimestamp() {
     this.updatedAt = new Date();
   }
+  @ManyToOne(() => UserEntity, (user) => user.articles)
+  author: UserEntity;
 }

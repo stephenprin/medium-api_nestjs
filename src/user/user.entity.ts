@@ -1,5 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BeforeInsert,
+  OneToMany,
+} from 'typeorm';
 import { hash } from 'bcrypt';
+import { ArticleEntity } from '@app/articles/article.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -24,4 +31,7 @@ export class UserEntity {
 
   @Column({ default: '' })
   image: string;
+
+  @OneToMany(() => ArticleEntity, (article) => article.author)
+  articles: ArticleEntity[];
 }

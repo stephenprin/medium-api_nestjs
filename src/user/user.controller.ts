@@ -13,16 +13,15 @@ import { UserService } from './user.service';
 import { CreateUserDto } from '@app/dto/createUser.dto';
 import { UserResponseInterface } from '@app/types/userResponse.interface';
 import { LoginUserDto } from '@app/dto/loginUser.dto';
-import { ExpressRequest } from '@app/types/expressRequest.interface';
 import { User } from '@app/decorators/user.decorator';
 import { UserEntity } from './user.entity';
 import { AuthGuard } from '@app/guards/auth.guard';
 import { UpdateUserDto } from '@app/dto/updateUserDto';
 
-@Controller()
+@Controller('user/')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  @Post('user/create')
+  @Post('create')
   @UsePipes(new ValidationPipe())
   async createUser(
     @Body('user') createUserDto: CreateUserDto,
@@ -31,7 +30,7 @@ export class UserController {
     return this.userService.buildUserResponse(user);
   }
 
-  @Post('user/login')
+  @Post('login')
   @UsePipes(new ValidationPipe())
   async login(
     @Body('user') loginUserDto: LoginUserDto,
