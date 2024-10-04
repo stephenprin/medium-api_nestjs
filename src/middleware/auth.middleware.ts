@@ -1,5 +1,5 @@
 import { JWT_SECRET_KEY } from '@app/config/config';
-import { ExpressRequest } from '@app/types/expressRequest.interface';
+import { ExpressRequest } from '@app/user/types/expressRequest.interface';
 import { UserService } from '@app/user/user.service';
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Response, NextFunction } from 'express';

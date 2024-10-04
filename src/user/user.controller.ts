@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from '@app/dto/createUser.dto';
-import { UserResponseInterface } from '@app/types/userResponse.interface';
+import { UserResponseInterface } from '@app/user/types/userResponse.interface';
 import { LoginUserDto } from '@app/dto/loginUser.dto';
 import { User } from '@app/decorators/user.decorator';
 import { UserEntity } from './user.entity';
