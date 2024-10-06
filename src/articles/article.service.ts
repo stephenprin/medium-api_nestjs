@@ -1,23 +1,56 @@
 import { CreateArticlesDto } from '@app/dto/createArticles.dto';
-import {
-  HttpCode,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ArticleEntity } from './article.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import { DataSource, DeleteResult, Repository } from 'typeorm';
 import { UserEntity } from '@app/user/user.entity';
-import { ArticleResponseInterface } from './types/ArticleResponseInterface';
+import { ArticleResponseInterface } from './types/articleResponse.interface';
 import slugify from 'slugify';
+import { ArticlesResponseInterface } from './types/articlesResponse.interface';
 
 @Injectable()
 export class ArticleService {
   constructor(
     @InjectRepository(ArticleEntity)
     private readonly articleRepository: Repository<ArticleEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+    private dataSource: DataSource,
   ) {}
+  async findAll(
+    currentUserId: number,
+    query: any,
+  ): Promise<ArticlesResponseInterface> {
+    const queryBuilder = this.dataSource
+      .getRepository(ArticleEntity)
+      .createQueryBuilder('articles')
+      .leftJoinAndSelect('articles.author', 'author');
+
+    if (query.tag) {
+      queryBuilder.andWhere('articles.tagList LIKE :tag', {
+        tag: `%${query.tag}`,
+      });
+    }
+    if (query.author) {
+      queryBuilder.andWhere('author.username = :username', {
+        username: query.author,
+      });
+    }
+
+    queryBuilder.orderBy('articles.createdAt', 'DESC');
+    const articlesCount = await queryBuilder.getCount();
+    if (query.nextPage) {
+      queryBuilder.limit(query.nextPage);
+    }
+    if (query.offset) {
+      queryBuilder.offset(query.offset);
+    }
+
+    const articles = await queryBuilder.getMany();
+
+    return { articles, articlesCount };
+  }
+
   async createArticle(
     currentUser: UserEntity,
     createArticleDto: CreateArticlesDto,
