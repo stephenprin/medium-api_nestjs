@@ -86,4 +86,16 @@ export class ArticleController {
     );
     return this.articleService.buildArticleResponse(articles);
   }
+  @Delete(':slug/favorite')
+  @UseGuards(AuthGuard)
+  async deleteArticleToFavorite(
+    @User('id') currentUserId: number,
+    @Param('slug') slug: string,
+  ): Promise<ArticleResponseInterface> {
+    const articles = await this.articleService.deleteArticleToFavorite(
+      currentUserId,
+      slug,
+    );
+    return this.articleService.buildArticleResponse(articles);
+  }
 }
