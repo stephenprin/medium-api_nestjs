@@ -5,14 +5,16 @@ import { ProfileService } from './profile.service';
 
 @Controller('profile')
 export class ProfileController {
-
-    constructor(private readonly profileService: ProfileService) {}
+  constructor(private readonly profileService: ProfileService) {}
   @Get(':username')
   async getProfile(
-    @User('id') currentId: number,
+    @User('id') currentUserId: number,
     @Param('username') profileUsername: string,
   ): Promise<IProfileInterface> {
-      
-      const profile = await this.profileService.getProfile(profileUsername);
+    const profile = await this.profileService.getProfile(
+      currentUserId,
+      profileUsername,
+    );
+    return this.profileService.buildProfileResponse(profile);
   }
 }
