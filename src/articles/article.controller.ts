@@ -30,6 +30,7 @@ export class ArticleController {
   ): Promise<ArticlesResponseInterface> {
     return this.articleService.findAll(currentUserId, query);
   }
+
   @Post('create')
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
